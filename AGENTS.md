@@ -4,7 +4,8 @@ xlaude is a CLI tool for managing AI coding agent instances with git worktree fo
 
 1. **OpenCode** - A powerful terminal AI coding tool
 2. **Qwen Code** - Qwen's code assistant CLI 
-3. **Claude** - AI assistant developed by Anthropic
+3. **Zed IDE** - Fast editor with Gemini CLI integration
+4. **Claude** - AI assistant developed by Anthropic
 
 ## Core Features
 
@@ -27,7 +28,8 @@ Open existing worktree and launch AI coding tool:
 - Attempts to launch AI tools in priority order:
   1. OpenCode
   2. Qwen Code
-  3. Claude (adds `--dangerously-skip-permissions` parameter if used)
+  3. Zed IDE (with Gemini CLI integration)
+  4. Claude (adds `--dangerously-skip-permissions` parameter if used)
 - Inherits all environment variables
 
 ### xlaude delete [name]
@@ -160,6 +162,7 @@ vim $(xlaude dir feature-x)/src/main.rs  # Edit file
 - `XLAUDE_NON_INTERACTIVE`: Set to "1" to disable interactive prompts
 - `XLAUDE_OPENCODE_CMD`: Override the OpenCode command (default: "opencode")
 - `XLAUDE_QWEN_CMD`: Override the Qwen Code command (default: "qwen")
+- `XLAUDE_ZED_CMD`: Override the Zed IDE command (default: "zed")
 - `XLAUDE_CLAUDE_CMD`: Override the Claude command (default: "claude")
 
 ## AI Tool Installation
@@ -187,6 +190,26 @@ qwen --version
 ```
 
 More information: [Qwen Code Repository](https://github.com/QwenLM/qwen-code)
+
+### Zed IDE
+
+```bash
+# Download from official website
+# Visit https://zed.dev/download and download the appropriate version for your platform
+
+# Install using Homebrew (macOS)
+brew install --cask zed
+
+# Install using apt (Ubuntu/Debian)
+curl -fsSL https://zed.dev/install.sh | sh
+
+# Install using pacman (Arch Linux)
+yay -S zed
+```
+
+Zed IDE comes with built-in Gemini CLI integration through the Agent Client Protocol (ACP). No additional setup is required for AI coding functionality.
+
+More information: [Zed IDE Documentation](https://zed.dev/docs)
 
 ### Claude
 

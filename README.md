@@ -1,6 +1,6 @@
 # xlaude - Xuanwo's AI Coding Assistant
 
-A CLI tool for managing AI coding assistant instances with git worktree for parallel development workflows. Supports OpenCode, Qwen Code, and Claude.
+A CLI tool for managing AI coding assistant instances with git worktree for parallel development workflows. Supports OpenCode, Qwen Code, Zed IDE, and Claude.
 
 ## A Personal Tool, Made for You to Customize
 
@@ -15,7 +15,7 @@ This project is designed as a personal workflow tool, tailored to my specific de
 - **Random naming**: Generate memorable names using BIP39 word list
 - **Dashboard mode**: Run multiple AI coding instances in background and switch between them (requires tmux)
 - **Pipe input support**: Integrate with Unix tools for automation
-- **AI tool fallback**: Automatically tries OpenCode, Qwen Code, then Claude in sequence
+- **AI tool fallback**: Automatically tries OpenCode, Qwen Code, Zed IDE, then Claude in sequence
 
 ## Installation
 
@@ -85,7 +85,7 @@ xlaude open
 xlaude open
 ```
 
-This switches to the worktree directory and launches an AI coding assistant (OpenCode, Qwen Code, or Claude in that order of preference). When run without arguments in a worktree directory, it opens the current worktree directly.
+This switches to the worktree directory and launches an AI coding assistant (OpenCode, Qwen Code, Zed IDE, or Claude in that order of preference). When run without arguments in a worktree directory, it opens the current worktree directly.
 
 ### Add existing worktree
 
@@ -297,6 +297,7 @@ State is persisted to platform-specific locations:
 - `XLAUDE_NON_INTERACTIVE`: Set to "1" to disable interactive prompts
 - `XLAUDE_OPENCODE_CMD`: Override the OpenCode command (default: "opencode")
 - `XLAUDE_QWEN_CMD`: Override the Qwen Code command (default: "qwen")
+- `XLAUDE_ZED_CMD`: Override the Zed IDE command (default: "zed")
 - `XLAUDE_CLAUDE_CMD`: Override the Claude command (default: "claude")
 
 ## Requirements
@@ -305,6 +306,7 @@ State is persisted to platform-specific locations:
 - At least one of these AI coding tools installed:
   - [OpenCode CLI](https://opencode.ai/docs/cli/) (primary)
   - [Qwen Code CLI](https://github.com/QwenLM/qwen-code) (secondary option)
+  - [Zed IDE](https://zed.dev/) (with Gemini CLI integration, tertiary option)
   - [Claude CLI](https://github.com/anthropics/claude-cli) (fallback option)
 - Rust (for building from source)
 - tmux (optional, for dashboard mode)

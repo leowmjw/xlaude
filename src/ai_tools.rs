@@ -18,6 +18,7 @@ pub struct AiTool {
 pub enum AiToolType {
     OpenCode,
     QwenCode,
+    Zed,  // Zed IDE with Gemini CLI integration
     Claude,
 }
 
@@ -36,6 +37,12 @@ impl AiToolType {
                 command: "qwen".to_string(),
                 default_args: vec![], // Qwen doesn't need special flags by default
                 env_var: "XLAUDE_QWEN_CMD".to_string(),
+            },
+            AiToolType::Zed => AiTool {
+                name: "Zed IDE".to_string(),
+                command: "zed".to_string(),
+                default_args: vec![], // Zed will use Gemini CLI integration automatically
+                env_var: "XLAUDE_ZED_CMD".to_string(),
             },
             AiToolType::Claude => AiTool {
                 name: "Claude".to_string(),
@@ -74,7 +81,8 @@ fn is_command_available(command: &str) -> bool {
 /// Returns the first available tool based on priority:
 /// 1. OpenCode
 /// 2. Qwen Code
-/// 3. Claude
+/// 3. Zed IDE (with Gemini CLI)
+/// 4. Claude
 ///
 /// If none are found, returns None
 pub fn find_available_tool() -> Option<AiTool> {
@@ -82,6 +90,7 @@ pub fn find_available_tool() -> Option<AiTool> {
     let tools = [
         AiToolType::OpenCode,
         AiToolType::QwenCode, 
+        AiToolType::Zed,
         AiToolType::Claude,
     ];
     
@@ -146,6 +155,7 @@ fn tool_type_to_default_cmd(name: &str) -> &str {
     match name {
         "OpenCode" => "opencode",
         "Qwen Code" => "qwen",
+        "Zed IDE" => "zed",
         "Claude" => "claude",
         _ => "",
     }
