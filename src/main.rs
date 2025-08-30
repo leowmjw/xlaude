@@ -2,6 +2,7 @@ use anyhow::Result;
 use clap::{Parser, Subcommand};
 use clap_complete::Shell;
 
+mod ai_tools;
 mod claude;
 mod claude_status;
 mod commands;
@@ -19,7 +20,7 @@ use commands::{
 
 #[derive(Parser)]
 #[command(name = "xlaude")]
-#[command(about = "Manage Claude instances with git worktrees", long_about = None)]
+#[command(about = "Manage AI coding tools with git worktrees", long_about = None)]
 struct Cli {
     #[command(subcommand)]
     command: Commands,
@@ -32,7 +33,7 @@ enum Commands {
         /// Name for the worktree (random BIP39 word if not provided)
         name: Option<String>,
     },
-    /// Open an existing worktree and launch Claude
+    /// Open an existing worktree and launch AI coding tool (OpenCode, Qwen Code, or Claude)
     Open {
         /// Name of the worktree to open (interactive selection if not provided)
         name: Option<String>,
@@ -54,7 +55,7 @@ enum Commands {
         /// New name for the worktree
         new_name: String,
     },
-    /// List all active Claude instances
+    /// List all active AI coding sessions
     List {
         /// Output as JSON
         #[arg(long)]
@@ -80,7 +81,7 @@ enum Commands {
         #[arg(long, default_value = "simple")]
         format: String,
     },
-    /// Launch interactive dashboard for managing Claude sessions
+    /// Launch interactive dashboard for managing AI coding sessions
     Dashboard,
 }
 

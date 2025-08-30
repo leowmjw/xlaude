@@ -1,8 +1,8 @@
 use anyhow::{Context, Result};
 use chrono::Utc;
 use colored::Colorize;
-use std::process::{Command, Stdio};
 
+use crate::ai_tools::{find_available_tool, launch_ai_tool, StdinMode};
 use crate::git::{get_current_branch, get_repo_name, is_base_branch, is_in_worktree};
 use crate::input::{drain_stdin, get_command_arg, is_piped_input, smart_confirm, smart_select};
 use crate::state::{WorktreeInfo, XlaudeState};
@@ -91,27 +91,20 @@ pub fn handle_open(name: Option<String>) -> Result<()> {
                 );
             }
 
-            // Launch Claude in current directory
-            let claude_cmd =
-                std::env::var("XLAUDE_CLAUDE_CMD").unwrap_or_else(|_| "claude".to_string());
-            let mut cmd = Command::new(&claude_cmd);
-
-            if claude_cmd == "claude" {
-                cmd.arg("--dangerously-skip-permissions");
-            }
-
-            cmd.envs(std::env::vars());
-
-            // If there's piped input, drain it and don't pass to Claude
-            if is_piped_input() {
+            // Launch AI tool with fallback mechanism
+            let stdin_mode = if is_piped_input() {
                 drain_stdin()?;
-                cmd.stdin(Stdio::null());
-            }
+                StdinMode::Null
+            } else {
+                StdinMode::Inherit
+            };
 
-            let status = cmd.status().context("Failed to launch Claude")?;
-
-            if !status.success() {
-                anyhow::bail!("Claude exited with error");
+            // Find the first available AI tool
+            if let Some(ai_tool) = find_available_tool() {
+                println!("{} Using {} as AI coding assistant", "🤖".green(), ai_tool.name.cyan());
+                launch_ai_tool(&ai_tool, stdin_mode)?;
+            } else {
+                anyhow::bail!("No AI coding tools found. Please install OpenCode, Qwen Code, or Claude CLI");
             }
 
             return Ok(());
@@ -166,28 +159,20 @@ pub fn handle_open(name: Option<String>) -> Result<()> {
     // Change to worktree directory and launch Claude
     std::env::set_current_dir(&worktree_info.path).context("Failed to change directory")?;
 
-    // Allow overriding claude command for testing
-    let claude_cmd = std::env::var("XLAUDE_CLAUDE_CMD").unwrap_or_else(|_| "claude".to_string());
-    let mut cmd = Command::new(&claude_cmd);
-
-    // Only add the flag if we're using the real claude command
-    if claude_cmd == "claude" {
-        cmd.arg("--dangerously-skip-permissions");
-    }
-
-    // Inherit all environment variables
-    cmd.envs(std::env::vars());
-
-    // If there's piped input, drain it and don't pass to Claude
-    if is_piped_input() {
+    // Determine stdin mode based on piped input
+    let stdin_mode = if is_piped_input() {
         drain_stdin()?;
-        cmd.stdin(Stdio::null());
-    }
-
-    let status = cmd.status().context("Failed to launch Claude")?;
-
-    if !status.success() {
-        anyhow::bail!("Claude exited with error");
+        StdinMode::Null
+    } else {
+        StdinMode::Inherit
+    };
+    
+    // Find and launch the first available AI tool
+    if let Some(ai_tool) = find_available_tool() {
+        println!("{} Using {} as AI coding assistant", "🤖".green(), ai_tool.name.cyan());
+        launch_ai_tool(&ai_tool, stdin_mode)?;
+    } else {
+        anyhow::bail!("No AI coding tools found. Please install OpenCode, Qwen Code, or Claude CLI");
     }
 
     Ok(())

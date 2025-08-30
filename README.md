@@ -1,6 +1,6 @@
-# xlaude - Xuanwo's Claude Code
+# xlaude - Xuanwo's AI Coding Assistant
 
-A CLI tool for managing Claude instances with git worktree for parallel development workflows.
+A CLI tool for managing AI coding assistant instances with git worktree for parallel development workflows. Supports OpenCode, Qwen Code, and Claude.
 
 ## A Personal Tool, Made for You to Customize
 
@@ -8,13 +8,14 @@ This project is designed as a personal workflow tool, tailored to my specific de
 
 ## Features
 
-- **Create isolated workspaces**: Each Claude instance runs in its own git worktree
+- **Create isolated workspaces**: Each AI coding assistant instance runs in its own git worktree
 - **Seamless switching**: Open and switch between multiple development contexts
 - **Smart cleanup**: Safely delete worktrees with uncommitted change detection
-- **Session tracking**: View Claude conversation history across instances
+- **Session tracking**: View AI coding conversation history across instances
 - **Random naming**: Generate memorable names using BIP39 word list
-- **Dashboard mode**: Run multiple Claude instances in background and switch between them (requires tmux)
+- **Dashboard mode**: Run multiple AI coding instances in background and switch between them (requires tmux)
 - **Pipe input support**: Integrate with Unix tools for automation
+- **AI tool fallback**: Automatically tries OpenCode, Qwen Code, then Claude in sequence
 
 ## Installation
 
@@ -84,7 +85,7 @@ xlaude open
 xlaude open
 ```
 
-This switches to the worktree directory and launches Claude with `--dangerously-skip-permissions`. When run without arguments in a worktree directory, it opens the current worktree directly.
+This switches to the worktree directory and launches an AI coding assistant (OpenCode, Qwen Code, or Claude in that order of preference). When run without arguments in a worktree directory, it opens the current worktree directly.
 
 ### Add existing worktree
 
@@ -107,7 +108,7 @@ Shows all managed worktrees with:
 
 - Name, repository, and path
 - Creation time
-- Recent Claude sessions (up to 3)
+- Recent AI coding sessions (up to 3)
 - Last user message from each session
 
 ### Delete a workspace
@@ -174,18 +175,18 @@ vim $(xlaude dir feature-auth)/src/main.rs
 xlaude dashboard
 ```
 
-Launches an interactive TUI dashboard for managing multiple Claude sessions:
+Launches an interactive TUI dashboard for managing multiple AI coding assistant sessions:
 
-- **View all worktrees**: See status of all projects and Claude sessions
-- **Background sessions**: Run multiple Claude instances simultaneously
+- **View all worktrees**: See status of all projects and AI coding sessions
+- **Background sessions**: Run multiple AI coding instances simultaneously
 - **Quick switching**: Press Enter to attach to a session, Ctrl+Q to return to dashboard
 - **Session preview**: View recent output from background sessions
 - **Keyboard shortcuts**:
   - `↑/↓` or `j/k`: Navigate project list
   - `Enter`: Attach to selected project
-  - `Ctrl+Q`: Detach from Claude back to dashboard
+  - `Ctrl+Q`: Detach from AI coding assistant back to dashboard
   - `n`: Create new worktree
-  - `d`: Stop selected Claude session
+  - `d`: Stop selected AI coding session
   - `r`: Refresh list
   - `?`: Show help
   - `q`: Quit dashboard
@@ -204,7 +205,7 @@ Launches an interactive TUI dashboard for managing multiple Claude sessions:
    xlaude open auth-system
    ```
 
-2. **Work on the feature** with Claude assistance
+2. **Work on the feature** with AI coding assistance
 
 3. **Switch contexts**:
 
@@ -294,12 +295,17 @@ State is persisted to platform-specific locations:
 
 - `XLAUDE_YES`: Set to "1" to auto-confirm all prompts
 - `XLAUDE_NON_INTERACTIVE`: Set to "1" to disable interactive prompts
+- `XLAUDE_OPENCODE_CMD`: Override the OpenCode command (default: "opencode")
+- `XLAUDE_QWEN_CMD`: Override the Qwen Code command (default: "qwen")
 - `XLAUDE_CLAUDE_CMD`: Override the Claude command (default: "claude")
 
 ## Requirements
 
 - Git with worktree support
-- Claude CLI installed
+- At least one of these AI coding tools installed:
+  - [OpenCode CLI](https://opencode.ai/docs/cli/) (primary)
+  - [Qwen Code CLI](https://github.com/QwenLM/qwen-code) (secondary option)
+  - [Claude CLI](https://github.com/anthropics/claude-cli) (fallback option)
 - Rust (for building from source)
 - tmux (optional, for dashboard mode)
 
