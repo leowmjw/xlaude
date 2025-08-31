@@ -2,7 +2,7 @@ use anyhow::{Context, Result};
 use chrono::Utc;
 use colored::Colorize;
 
-use crate::ai_tools::{find_available_tool, launch_ai_tool, StdinMode};
+use crate::ai_tools::{find_available_tool, launch_ai_tool_with_path, StdinMode};
 use crate::git::{get_current_branch, get_repo_name, is_base_branch, is_in_worktree};
 use crate::input::{drain_stdin, get_command_arg, is_piped_input, smart_confirm, smart_select};
 use crate::state::{WorktreeInfo, XlaudeState};
@@ -102,7 +102,7 @@ pub fn handle_open(name: Option<String>) -> Result<()> {
             // Find the first available AI tool
             if let Some(ai_tool) = find_available_tool() {
                 println!("{} Using {} as AI coding assistant", "🤖".green(), ai_tool.name.cyan());
-                launch_ai_tool(&ai_tool, stdin_mode)?;
+                launch_ai_tool_with_path(&ai_tool, stdin_mode, Some(current_dir))?;
             } else {
                 anyhow::bail!("No AI coding tools found. Please install OpenCode, Qwen Code, or Claude CLI");
             }
@@ -170,7 +170,7 @@ pub fn handle_open(name: Option<String>) -> Result<()> {
     // Find and launch the first available AI tool
     if let Some(ai_tool) = find_available_tool() {
         println!("{} Using {} as AI coding assistant", "🤖".green(), ai_tool.name.cyan());
-        launch_ai_tool(&ai_tool, stdin_mode)?;
+        launch_ai_tool_with_path(&ai_tool, stdin_mode, Some(worktree_info.path.clone()))?;
     } else {
         anyhow::bail!("No AI coding tools found. Please install OpenCode, Qwen Code, or Claude CLI");
     }

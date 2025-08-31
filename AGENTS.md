@@ -25,11 +25,17 @@ Open existing worktree and launch AI coding tool:
   - If current worktree not managed: Asks to add and open
   - Otherwise: Displays interactive selection
 - Changes to worktree directory
-- Attempts to launch AI tools in priority order:
-  1. OpenCode
-  2. Qwen Code
-  3. Zed IDE (with Gemini CLI integration)
-  4. Claude (adds `--dangerously-skip-permissions` parameter if used)
+- Attempts to launch AI tools with debug output showing search process:
+  - **Default priority** (when `XLAUDE_PREFER_GEMINI` not set):
+    1. OpenCode
+    2. Qwen Code
+    3. Zed IDE (with Gemini CLI integration)
+    4. Claude (adds `--dangerously-skip-permissions` parameter if used)
+  - **Gemini priority** (when `XLAUDE_PREFER_GEMINI=1`):
+    1. Zed IDE (prioritized first)
+    2. Falls back to default order if Zed unavailable
+- For Zed IDE: Explicitly passes worktree path as argument to ensure correct directory opening
+- Shows detailed tool availability checking and command execution
 - Inherits all environment variables
 
 ### xlaude delete [name]
@@ -84,8 +90,10 @@ Get worktree directory path:
 
 - Built with Rust
 - Direct git command invocation
-- AI tool priority and fallback mechanism
-  - Tries tools in OpenCode > Qwen Code > Claude order
+- AI tool priority and fallback mechanism with debug output
+  - Default order: OpenCode > Qwen Code > Zed > Claude
+  - When `XLAUDE_PREFER_GEMINI=1`: Zed prioritized first, then falls back to default order
+  - Shows detailed tool availability checking during execution
   - Customizable through environment variables
 - State persistence location:
   - macOS: `~/Library/Application Support/com.xuanwo.xlaude/state.json`
@@ -160,6 +168,7 @@ vim $(xlaude dir feature-x)/src/main.rs  # Edit file
 
 - `XLAUDE_YES`: Set to "1" to auto-confirm all prompts
 - `XLAUDE_NON_INTERACTIVE`: Set to "1" to disable interactive prompts
+- `XLAUDE_PREFER_GEMINI`: Set to "1" to prioritize Zed IDE (with Gemini) over other AI tools
 - `XLAUDE_OPENCODE_CMD`: Override the OpenCode command (default: "opencode")
 - `XLAUDE_QWEN_CMD`: Override the Qwen Code command (default: "qwen")
 - `XLAUDE_ZED_CMD`: Override the Zed IDE command (default: "zed")
